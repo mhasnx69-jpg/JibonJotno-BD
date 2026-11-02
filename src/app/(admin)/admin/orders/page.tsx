@@ -1,7 +1,6 @@
 ﻿"use client";
 
 import React, { useState } from "react";
-import AdminSidebar from "@/components/admin/AdminSidebar";
 import { ShoppingBag, CheckCircle2, Clock, Truck, Eye } from "lucide-react";
 
 export default function AdminOrdersPage() {
@@ -35,9 +34,7 @@ export default function AdminOrdersPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#F7F9FC] font-sans">
-      <AdminSidebar />
-      <div className="flex-1 p-8 space-y-6">
+    <div className="flex-1 p-8 space-y-6">
         <header className="border-b pb-4 border-slate-200">
           <h1 className="text-xl font-black text-[#101B32] flex items-center gap-2">
             <ShoppingBag className="w-6 h-6 text-emerald-700" />

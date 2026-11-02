@@ -22,6 +22,7 @@ interface CartContextType {
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
   getSubtotal: () => number;
+  subtotal: number;
   totalPrice: number;
   totalItems: number;
 }
@@ -88,7 +89,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const getSubtotal = () =>
     cart.reduce((sum, item) => sum + Number(item.unit_price || 0) * Number(item.quantity || 1), 0);
 
-  const totalPrice = getSubtotal();
+  const subtotal = getSubtotal();
+  const totalPrice = subtotal;
   const totalItems = cart.reduce((sum, item) => sum + Number(item.quantity || 0), 0);
 
   return (
@@ -103,6 +105,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         updateQuantity,
         clearCart,
         getSubtotal,
+        subtotal,
         totalPrice,
         totalItems,
       }}
@@ -125,6 +128,7 @@ export function useCart() {
       updateQuantity: () => {},
       clearCart: () => {},
       getSubtotal: () => 0,
+      subtotal: 0,
       totalPrice: 0,
       totalItems: 0,
     };

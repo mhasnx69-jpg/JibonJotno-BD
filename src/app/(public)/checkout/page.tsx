@@ -8,18 +8,22 @@ import { createClient } from "@/lib/supabase/client";
 import {
   ArrowLeft,
   CheckCircle2,
-  ShieldCheck,
-  Truck,
-  ShoppingBag,
   User,
   Phone,
   MapPin,
-  FileText,
 } from "lucide-react";
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { cart, subtotal, clearCart } = useCart();
+  const cartContext = useCart() as any;
+  const cart = Array.isArray(cartContext?.cart) ? cartContext.cart : [];
+  const clearCart = typeof cartContext?.clearCart === "function" ? cartContext.clearCart : () => {};
+
+  const subtotal = cart.reduce(
+    (sum: number, item: any) =>
+      sum + Number(item.unit_price || item.price || 0) * Number(item.quantity || 1),
+    0
+  );
 
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
@@ -55,7 +59,7 @@ export default function CheckoutPage() {
         order_notes: note.trim() || null,
       });
     } catch (err) {
-      console.warn("Supabase order logged:", err);
+      console.warn("Order logged:", err);
     }
 
     setOrderSuccessId(generatedOrderNumber);
@@ -73,7 +77,7 @@ export default function CheckoutPage() {
           <div>
             <h1 className="text-xl font-black text-[#101B32]">অর্ডার সফলভাবে সম্পন্ন হয়েছে!</h1>
             <p className="text-xs text-[#7B8AA4] pt-1">
-              আমাদের রেজিস্টার্ড ফার্মাসিস্ট শীঘ্রই আপনার সাথে যোগাযোগ করবেন।
+              আমাদের রেজিস্টার্ড ফার্মাসিস্ট খুব শীঘ্রই আপনার সাথে যোগাযোগ করবেন।
             </p>
           </div>
           <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200">

@@ -40,11 +40,12 @@ export default function LoginPage() {
 
       if (mode === "signup") {
         if (!fullName.trim()) {
-          setErrorMsg("দয়া করে আপনার পূর্ণ নাম লিখুন।");
+          setErrorMsg("দয়া করে আপনার পুরো নাম লিখুন।");
           setLoading(false);
           return;
         }
 
+        // 1. Supabase Auth-e Sign Up kora
         const { data, error } = await supabase.auth.signUp({
           email: email.trim(),
           password: password,
@@ -57,7 +58,7 @@ export default function LoginPage() {
 
         if (error) throw error;
 
-        // Profiles te customer role set kora
+        // 2. public.profiles table-e customer record store kora
         if (data.user) {
           await supabase.from("profiles").upsert({
             id: data.user.id,
@@ -66,9 +67,11 @@ export default function LoginPage() {
           });
         }
 
-        setSuccessMsg("আপনার অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে! এখন লগইন করুন।");
+        setSuccessMsg("অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে! এখন এই ইমেইল ও পাসওয়ার্ড দিয়ে লগইন করুন।");
         setMode("login");
+        setPassword("");
       } else {
+        // Login kora
         const { data, error } = await supabase.auth.signInWithPassword({
           email: email.trim(),
           password: password,
@@ -76,7 +79,7 @@ export default function LoginPage() {
 
         if (error) throw error;
 
-        // Role check kora
+        // Role check kora (Admin naki Customer)
         const { data: profile } = await supabase
           .from("profiles")
           .select("role")
@@ -91,7 +94,9 @@ export default function LoginPage() {
       }
     } catch (err: unknown) {
       console.error("Auth error:", err);
-      setErrorMsg(err instanceof Error ? err.message : "অথেন্টিকেশনে সমস্যা হয়েছে। সঠিক তথ্য দিন।");
+      setErrorMsg(
+        err instanceof Error ? err.message : "অথেন্টিকেশনে সমস্যা হয়েছে। সঠিক তথ্য দিন।"
+      );
     } finally {
       setLoading(false);
     }
@@ -99,6 +104,8 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-[#F7F9FC] text-[#101B32] flex flex-col font-sans">
+      
+      {/* Top Header */}
       <header className="bg-white border-b border-[#E5EBF2] h-14 px-4 sm:px-8 flex items-center justify-between">
         <Link
           href="/"
@@ -113,6 +120,7 @@ export default function LoginPage() {
         </div>
       </header>
 
+      {/* Auth Card */}
       <main className="flex-1 flex items-center justify-center p-4 sm:p-6">
         <div className="max-w-md w-full bg-white rounded-3xl border border-[#E5EBF2] p-8 shadow-xl space-y-6">
           
@@ -128,12 +136,12 @@ export default function LoginPage() {
             </h1>
             <p className="text-xs text-[#7B8AA4]">
               {mode === "login"
-                ? "রোগী ড্যাশবোর্ড বা অ্যাডমিন প্যানেলে প্রবেশ করুন"
-                : "সহজে ওষুধ অর্ডার ও স্বাস্থ্যসেবা পেতে যোগ দিন"}
+                ? "অর্ডার হিস্ট্রি, প্রেসক্রিপশন ও ড্যাশবোর্ডে প্রবেশ করুন"
+                : "সহজে ওষুধ কিনতে ও জরুরি সেবা পেতে নিবন্ধন করুন"}
             </p>
           </div>
 
-          {/* Mode Switcher Tabs */}
+          {/* Login / Sign Up Toggle Buttons */}
           <div className="grid grid-cols-2 p-1 bg-[#F7F9FC] rounded-2xl border border-[#E5EBF2]">
             <button
               type="button"
@@ -184,7 +192,7 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             {mode === "signup" && (
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-[#101B32]">আপনার পূর্ণ নাম *</label>
+                <label className="text-xs font-bold text-[#101B32]">আপনার নাম *</label>
                 <div className="relative">
                   <User className="w-4 h-4 text-[#7B8AA4] absolute left-3.5 top-3" />
                   <input
@@ -243,7 +251,7 @@ export default function LoginPage() {
               className="w-full py-3.5 rounded-xl bg-[#0D4C3B] hover:bg-[#12614A] text-white font-bold text-xs sm:text-sm transition-colors shadow-md flex items-center justify-center gap-2 disabled:bg-[#7B8AA4]"
             >
               {loading ? (
-                <span>অপেক্ষা করুন...</span>
+                <span>লোড হচ্ছে...</span>
               ) : mode === "login" ? (
                 <>
                   <LogIn className="w-4 h-4" />
@@ -258,7 +266,8 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <div className="text-center pt-2">
+          {/* Bottom Switch Link */}
+          <div className="text-center pt-2 border-t border-[#F1F5F9]">
             <button
               type="button"
               onClick={() => {
@@ -269,8 +278,8 @@ export default function LoginPage() {
               className="text-xs font-bold text-[#0D4C3B] hover:underline"
             >
               {mode === "login"
-                ? "নতুন অ্যাকাউন্ট তৈরি করতে চান? এখানে সাইন আপ করুন"
-                : "আগে থেকেই অ্যাকাউন্ট আছে? এখানে ক্লিক করে লগইন করুন"}
+                ? "নতুন ব্যবহারকারী? এখানে ক্লিক করে সাইন আপ করুন"
+                : "পূর্বে অ্যাকাউন্ট তৈরি করা থাকলে এখানে লগইন করুন"}
             </button>
           </div>
 

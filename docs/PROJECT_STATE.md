@@ -1,25 +1,47 @@
-﻿# JibonJotno (জীবনযত্ন) — Project State Tracker
+﻿# JibonJotno (জীবনযত্ন) — Project State & Milestone Tracker
 
-## 1. Current Status (বর্তমান অবস্থা)
-- **Active Phase:** Phase 3 — Complete Admin CMS & Media Management
-- **Current Step:** Phase 3, Step 2 Completed (Medicine & Pharmacy CMS Module Created & Verified)
-- **Last Audit & Typecheck:** Passed (
-pm run typecheck with 0 errors)
+## Current Milestone: Phase 1 — Environment Verification & Homepage Baseline
+- **Date**: 2026-11-02
+- **Target Platform**: Next.js 15 (App Router), TypeScript, Tailwind CSS, Supabase, Vercel
+- **Status**: IN PROGRESS
 
-## 2. Phase Completion Checklist (ধাপসমূহের চেকলিস্ট)
-- [x] **Phase 0:** Planning, Audit & Documentation Foundation (Completed)
-- [x] **Phase 1:** Environment, Next.js Setup, Supabase Config & Database Migrations (Completed)
-- [x] **Phase 2:** Authentication, 9-Role RBAC & Immutable Audit Logging (Completed)
-- [x] **Phase 3:** Complete Admin CMS & Media Management (Step 1 & 2 Completed!)
-- [ ] **Phase 4:** Public Healthcare Website & Bilingual Search Engine (Next Up)
-- [ ] **Phase 5:** Patient Accounts & Doctor Appointment Workflows
-- [ ] **Phase 6:** Online Pharmacy, Cart, Prescription Verification & COD Checkout
-- [ ] **Phase 7:** Comprehensive Testing, Security Audit & Performance Verification
-- [ ] **Phase 8:** Production Hosting, Domain, HTTPS & Smoke Testing
-- [ ] **Phase 9:** Mobile Application Development (Post-Web Launch)
+## Architecture Overview
+- **Database**: Supabase PostgreSQL (`ezlcmwobkistnahsfmtl.supabase.co`)
+- **Authentication**: Supabase Auth (SSR Cookies) + RBAC
+- **Storage**: Supabase Storage (`public-media` and private `prescriptions`)
+- **Design Reference**: Strict reproduction of `localhost_3001__2.jpg`
 
-## 3. Environment Verification Log (এনভায়রনমেন্ট লগ)
-- **Operating System:** Windows (PowerShell)
-- **Node.js Version:** v24.16.0
-- **npm Version:** 11.13.0
-- **Git Version:** git version 2.56.0.windows.2
+## Completed Milestones
+- [x] Phase 0: Master Architecture Planning and Inspection approved.
+- [x] Phase 1 (Step 1): Fixed `@heroicons/react` build crash by switching to `lucide-react`. Standardized UI tokens.
+
+## Files Created / Modified
+- `PROJECT_STATE.md` (Created): Master project tracker.
+- `src/app/page.tsx` (Modified): Replaced placeholder with exact screenshot layout matching `localhost_3001__2.jpg`.
+
+## Current Verification Checklist
+- [ ] `npm run build` passes with 0 errors.
+- [ ] Screenshot match confirmed on `http://localhost:3000`.
+
+## Next Step
+- Step 2: Supabase database migration verification and environment variable validation.
+# JibonJotno (জীবনযত্ন) — Project State & Milestone Tracker
+
+## Current Milestone: Phase 3 — Supabase Database Migration & Schema
+- **Target Platform**: Next.js 15 (App Router), TypeScript, Tailwind CSS, Supabase, Vercel
+- **Status**: RUNNING DATABASE SCHEMA MIGRATION
+
+## Completed Milestones
+- [x] Phase 0: Master Architecture Planning and Inspection approved.
+- [x] Phase 1: Clean build verified (`npm run build` exits 0 with `lucide-react`).
+- [x] Phase 2: Screenshot-exact homepage UI template implemented in `src/app/page.tsx`.
+- [ ] Phase 3: Supabase SQL migrations applied and verified in SQL Editor.
+
+## Files Created / Modified
+- `PROJECT_STATE.md` (Updated)
+- `supabase/migrations/20261102_initial_schema.sql` (Created): Core schema with RLS, Trigram indexes, Enums, and strict constraints.
+
+## Next Step
+- Step 3: Insert initial seed categories and connect dynamic medicine counts to the homepage hero pill badge.
+
+- [x] Phase 3: Supabase database schema, tables, and RLS policies successfully created and verified.

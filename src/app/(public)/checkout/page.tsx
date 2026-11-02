@@ -9,12 +9,10 @@ import { ArrowLeft, CheckCircle2 } from "lucide-react";
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const cartContext = useCart() as any;
-  const cart = Array.isArray(cartContext?.cart) ? cartContext.cart : [];
-  const clearCart = typeof cartContext?.clearCart === "function" ? cartContext.clearCart : () => {};
+  const { cart, clearCart } = useCart();
 
   const subtotal = cart.reduce(
-    (sum: number, item: any) =>
+    (sum, item) =>
       sum + Number(item.unit_price || item.price || 0) * Number(item.quantity || 1),
     0
   );

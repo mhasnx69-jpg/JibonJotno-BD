@@ -187,6 +187,5 @@ export default function AdminHospitalsPage() {
           </div>
         </div>
       </div>
-    </div>
   );
 }

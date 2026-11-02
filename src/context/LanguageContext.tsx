@@ -11,7 +11,7 @@ export interface LanguageContextType {
   toggleLanguage: () => void;
   setLang: (lang: Language) => void;
   setLanguage: (lang: Language) => void;
-  t?: (key: string) => string;
+  t: (key: string, fallback?: string) => string;
   [key: string]: any;
 }
 
@@ -43,7 +43,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         toggleLanguage: toggleLang,
         setLang,
         setLanguage: setLang,
-        t: (k: string) => k,
+        t: (k: string, _fallback?: string) => k,
       }}
     >
       {children}
@@ -61,7 +61,7 @@ export function useLanguage() {
       toggleLanguage: () => {},
       setLang: () => {},
       setLanguage: () => {},
-      t: (k: string) => k,
+      t: (k: string, _fallback?: string) => k,
     };
   }
   return context;

@@ -57,21 +57,23 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const pId = newItem.product_id || newItem.id || "item_" + Date.now();
     setCart((prev) => {
       const idx = prev.findIndex((i) => (i.product_id || i.id) === pId);
-      if (idx > -1) {
+      const existingItem = prev[idx];
+      if (existingItem) {
         const updated = [...prev];
-        updated[idx] = { ...updated[idx], quantity: updated[idx].quantity + (newItem.quantity || 1) };
+        updated[idx] = {
+          ...existingItem,
+          quantity: existingItem.quantity + (newItem.quantity || 1),
+        };
         return updated;
       }
-      return [
-        ...prev,
-        {
-          ...newItem,
-          product_id: pId,
-          id: pId,
-          unit_price: Number(newItem.unit_price || newItem.price || 0),
-          quantity: newItem.quantity || 1,
-        },
-      ];
+      const item: CartItem = {
+        ...newItem,
+        product_id: pId,
+        id: pId,
+        unit_price: Number(newItem.unit_price || newItem.price || 0),
+        quantity: newItem.quantity || 1,
+      };
+      return [...prev, item];
     });
   };
 

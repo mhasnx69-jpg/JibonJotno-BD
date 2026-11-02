@@ -115,6 +115,5 @@ export default function AdminArticlesPage() {
           </div>
         </div>
       </div>
-    </div>
   );
 }

@@ -13,6 +13,7 @@ import {
   translateIndicationsToBn,
   translateSideEffectsToBn,
   translateStorageToBn,
+  translateActiveIngredientToBn,
 } from "@/lib/bilingualHelper";
 import {
   ArrowLeft,
@@ -24,10 +25,6 @@ import {
   HeartPulse,
   ThermometerSnowflake,
   Layers,
-  ShieldCheck,
-  PhoneCall,
-  Clock,
-  Sparkles,
 } from "lucide-react";
 
 export default function MedicineDetailsPage() {
@@ -83,7 +80,7 @@ export default function MedicineDetailsPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#F7F9FC] flex items-center justify-center text-xs text-[#7B8AA4]">
-        ওষুধের সম্পূর্ণ দ্বিভাষিক (Bangla & English) তথ্য লোড হচ্ছে...
+        {isEn ? "Loading complete medicine details..." : "ওষুধের সম্পূর্ণ বিস্তারিত তথ্য লোড হচ্ছে..."}
       </div>
     );
   }
@@ -91,9 +88,11 @@ export default function MedicineDetailsPage() {
   if (!med) {
     return (
       <div className="min-h-screen bg-[#F7F9FC] flex flex-col items-center justify-center p-4 text-center space-y-3">
-        <h2 className="text-lg font-bold text-[#101B32]">ওষুধের তথ্য পাওয়া যায়নি / Medicine Not Found</h2>
+        <h2 className="text-lg font-bold text-[#101B32]">
+          {isEn ? "Medicine details not found" : "ওষুধের তথ্য পাওয়া যায়নি"}
+        </h2>
         <Link href="/medicines" className="px-4 py-2 rounded-xl bg-[#0D4C3B] text-white text-xs font-bold">
-          ওষুধ তালিকায় ফিরে যান
+          {isEn ? "Back to Medicines" : "ওষুধ তালিকায় ফিরে যান"}
         </Link>
       </div>
     );
@@ -130,18 +129,17 @@ export default function MedicineDetailsPage() {
             className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-[#0D4C3B] hover:text-[#12614A]"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>{isEn ? "Back to Medicines" : "ওষুধ তালিকায় ফিরে যান"}</span>
+            <span>{isEn ? "Back to Medicine List" : "ওষুধ তালিকায় ফিরে যান"}</span>
           </Link>
 
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Bilingual Toggle Button */}
             <button
               type="button"
               onClick={toggleLang}
               className="px-3.5 py-2 rounded-xl border border-[#0D4C3B]/40 bg-emerald-50 hover:bg-emerald-100 text-xs font-black text-[#0D4C3B] flex items-center gap-1.5 transition-all shadow-2xs"
             >
               <Globe className="w-4 h-4 text-[#0D4C3B]" />
-              <span>{isEn ? "বাংলায় দেখুন (Bangla)" : "View in English"}</span>
+              <span>{isEn ? "বাংলায় দেখুন" : "View in English"}</span>
             </button>
 
             <button
@@ -164,7 +162,7 @@ export default function MedicineDetailsPage() {
             <div className="space-y-2">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-xs font-extrabold uppercase tracking-wider text-[#0D4C3B] bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200">
-                  {isEn ? "1. Basic Information" : "১. প্রাথমিক পরিচিতি (Basic Information)"}
+                  {isEn ? "1. Basic Information" : "১. প্রাথমিক পরিচিতি"}
                 </span>
                 <span
                   className={`text-xs font-bold px-3 py-1 rounded-full ${
@@ -173,33 +171,25 @@ export default function MedicineDetailsPage() {
                       : "bg-emerald-50 text-emerald-700 border border-emerald-200"
                   }`}
                 >
-                  {med.is_prescription_required
-                    ? (isEn ? "Prescription Required (Rx)" : "প্রেসক্রিপশন আবশ্যক (Rx)")
-                    : (isEn ? "Over The Counter (OTC)" : "ওভার দ্য কাউন্টার (OTC)")}
+                  {isEn
+                    ? (med.is_prescription_required ? "Prescription Required (Rx)" : "Over The Counter (OTC)")
+                    : (med.is_prescription_required ? "প্রেসক্রিপশন আবশ্যক (Rx)" : "ওভার দ্য কাউন্টার (OTC)")}
                 </span>
               </div>
 
               <h1 className="text-2xl sm:text-3xl font-black text-[#101B32] pt-1">
-                {isEn ? med.name_en : (med.name_bn || med.name_en)}{" "}
-                <span className="text-lg text-[#7B8AA4] font-semibold">
-                  ({isEn ? (med.name_bn || med.name_en) : med.name_en})
-                </span>
+                {isEn ? med.name_en : (med.name_bn || med.name_en)}
               </h1>
 
-              <div className="text-xs sm:text-sm font-bold space-y-1">
+              <div className="text-xs sm:text-sm font-bold">
                 <p className="text-[#0D4C3B] flex items-center gap-1.5">
-                  <span>🧪 {isEn ? "Generic Name:" : "মূল রাসায়নিক উপাদান (Generic):"}</span>
-                  <span className="underline">{med.generic_name}</span>
+                  <span>🧪 {isEn ? "Generic Name:" : "মূল রাসায়নিক উপাদান:"}</span>
+                  <span className="underline">{isEn ? med.generic_name : genericBn}</span>
                 </p>
-                {!isEn && genericBn !== med.generic_name && (
-                  <p className="text-emerald-700 text-xs pl-5 font-semibold">
-                    বাংলা নাম: {genericBn}
-                  </p>
-                )}
               </div>
             </div>
 
-            {/* Price Box */}
+            {/* Price & Order Box */}
             <div className="bg-[#F7F9FC] p-5 rounded-2xl border border-[#E5EBF2] min-w-[240px] space-y-2">
               <div className="flex justify-between items-center text-xs text-[#7B8AA4]">
                 <span>{isEn ? `Unit Price (per ${med.pack_unit || "Piece"}):` : `প্রতি ${getPackUnitBn(med.pack_unit)} মূল্য:`}</span>
@@ -229,24 +219,28 @@ export default function MedicineDetailsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
             <div className="bg-[#F7F9FC] p-4 rounded-2xl border border-[#E5EBF2]">
               <span className="text-[#7B8AA4] block text-[11px]">
-                {isEn ? "Brand Name:" : "বাণিজ্যিক নাম (Brand Name):"}
-              </span>
-              <span className="font-extrabold text-[#101B32] text-sm pt-1 block">{med.name_en}</span>
-            </div>
-
-            <div className="bg-[#F7F9FC] p-4 rounded-2xl border border-[#E5EBF2]">
-              <span className="text-[#7B8AA4] block text-[11px]">
-                {isEn ? "Strength / Power:" : "ওষুধের মাত্রা (Strength):"}
-              </span>
-              <span className="font-extrabold text-[#101B32] text-sm pt-1 block">{med.strength}</span>
-            </div>
-
-            <div className="bg-[#F7F9FC] p-4 rounded-2xl border border-[#E5EBF2]">
-              <span className="text-[#7B8AA4] block text-[11px]">
-                {isEn ? "Dosage Form:" : "ওষুধের ধরন (Dosage Form):"}
+                {isEn ? "Brand Name:" : "বাণিজ্যিক নাম:"}
               </span>
               <span className="font-extrabold text-[#101B32] text-sm pt-1 block">
-                {isEn ? med.dosage_form : `${dosageBn} (${med.dosage_form})`}
+                {isEn ? med.name_en : (med.name_bn || med.name_en)}
+              </span>
+            </div>
+
+            <div className="bg-[#F7F9FC] p-4 rounded-2xl border border-[#E5EBF2]">
+              <span className="text-[#7B8AA4] block text-[11px]">
+                {isEn ? "Strength / Power:" : "ওষুধের মাত্রা:"}
+              </span>
+              <span className="font-extrabold text-[#101B32] text-sm pt-1 block">
+                {med.strength}
+              </span>
+            </div>
+
+            <div className="bg-[#F7F9FC] p-4 rounded-2xl border border-[#E5EBF2]">
+              <span className="text-[#7B8AA4] block text-[11px]">
+                {isEn ? "Dosage Form:" : "ওষুধের ধরন:"}
+              </span>
+              <span className="font-extrabold text-[#101B32] text-sm pt-1 block">
+                {isEn ? med.dosage_form : dosageBn}
               </span>
             </div>
 
@@ -269,13 +263,13 @@ export default function MedicineDetailsPage() {
               <span>
                 {isEn
                   ? "2. Clinical & Medical Information"
-                  : "২. চিকিৎসা সংক্রান্ত বিস্তারিত তথ্য (Clinical Information)"}
+                  : "২. চিকিৎসা সংক্রান্ত বিস্তারিত তথ্য"}
               </span>
             </h2>
             <p className="text-xs text-[#7B8AA4] pt-0.5">
               {isEn
-                ? "Bilingual clinical summary based on registered pharmacopeia guidelines."
-                : "রেজিস্টার্ড চিকিৎসকদের প্রেসক্রিপশন ও ফার্মাকোপিয়া নির্দেশিকা অনুযায়ী প্রস্তুত।"}
+                ? "Standard pharmacopeia and medical prescribing guidelines."
+                : "অফিশিয়াল ফার্মাকোপিয়া ও চিকিৎসা নির্দেশিকা অনুযায়ী প্রস্তুত।"}
             </p>
           </div>
 
@@ -285,83 +279,46 @@ export default function MedicineDetailsPage() {
             <div className="space-y-2 bg-[#F7F9FC] p-4 sm:p-5 rounded-2xl border border-[#E5EBF2]">
               <h3 className="font-extrabold text-[#0D4C3B] flex items-center gap-2 text-sm sm:text-base">
                 <span>🎯</span>
-                <span>{isEn ? "Indications (Uses & Prescription)" : "ব্যবহার বা নির্দেশনা (Indications)"}</span>
+                <span>{isEn ? "Indications & Prescribed Uses" : "ব্যবহার ও রোগ নিরাময় নির্দেশিকা"}</span>
               </h3>
-              
-              {/* Bangla Translation */}
-              <div className="bg-white p-3 rounded-xl border border-slate-200/80">
-                <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md inline-block mb-1">
-                  বাংলা নির্দেশিকা:
-                </span>
-                <p className="text-[#101B32] leading-relaxed text-xs sm:text-sm">
-                  {translateIndicationsToBn(med.indications, med.generic_name)}
-                </p>
-              </div>
-
-              {/* English Description */}
-              <div className="bg-white/80 p-3 rounded-xl border border-dashed border-slate-200">
-                <span className="text-[10px] font-bold text-slate-500 block mb-1">
-                  Clinical Note (English):
-                </span>
-                <p className="text-slate-700 leading-relaxed text-xs">
-                  {med.indications}
-                </p>
-              </div>
+              <p className="text-[#101B32] leading-relaxed text-xs sm:text-sm pl-6">
+                {isEn ? med.indications : translateIndicationsToBn(med.indications, med.generic_name)}
+              </p>
             </div>
 
-            {/* Active Ingredient */}
+            {/* Active Ingredient (সক্রিয় উপাদান) */}
             {med.active_ingredient && (
               <div className="space-y-1.5 bg-[#F7F9FC] p-4 sm:p-5 rounded-2xl border border-[#E5EBF2]">
                 <h3 className="font-extrabold text-[#0D4C3B] flex items-center gap-2 text-sm sm:text-base">
                   <Layers className="w-4 h-4 text-[#0D4C3B]" />
-                  <span>{isEn ? "Active Ingredient Composition" : "সক্রিয় উপাদান ও রাসায়নিক গঠন"}</span>
+                  <span>{isEn ? "Active Ingredient Composition" : "সক্রিয় উপাদান ও ফর্মুলা"}</span>
                 </h3>
                 <p className="text-[#101B32] leading-relaxed pl-6 text-xs sm:text-sm">
-                  {med.active_ingredient}
+                  {isEn ? med.active_ingredient : translateActiveIngredientToBn(med.active_ingredient)}
                 </p>
               </div>
             )}
 
-            {/* Side Effects */}
+            {/* Side Effects (পার্শ্বপ্রতিক্রিয়া) */}
             <div className="space-y-2 bg-rose-50/70 p-4 sm:p-5 rounded-2xl border border-rose-200">
               <h3 className="font-extrabold text-rose-900 flex items-center gap-2 text-sm sm:text-base">
                 <HeartPulse className="w-4 h-4 text-rose-600" />
-                <span>{isEn ? "Side Effects & Precautions" : "পার্শ্বপ্রতিক্রিয়া ও সতর্কতা (Side Effects)"}</span>
+                <span>{isEn ? "Side Effects & Adverse Reactions" : "পার্শ্বপ্রতিক্রিয়া ও সতর্কতা"}</span>
               </h3>
-              
-              <div className="bg-white/90 p-3 rounded-xl border border-rose-200">
-                <span className="text-[10px] font-bold text-rose-800 bg-rose-100 px-2 py-0.5 rounded-md inline-block mb-1">
-                  বাংলায় সতর্কতা:
-                </span>
-                <p className="text-rose-950 leading-relaxed text-xs sm:text-sm">
-                  {translateSideEffectsToBn(med.side_effects)}
-                </p>
-              </div>
-
-              <div className="bg-white/60 p-3 rounded-xl border border-dashed border-rose-200">
-                <span className="text-[10px] font-bold text-slate-500 block mb-1">
-                  Clinical Detail (English):
-                </span>
-                <p className="text-slate-700 leading-relaxed text-xs">
-                  {med.side_effects}
-                </p>
-              </div>
+              <p className="text-rose-950 leading-relaxed text-xs sm:text-sm pl-6 font-medium">
+                {isEn ? med.side_effects : translateSideEffectsToBn(med.side_effects)}
+              </p>
             </div>
 
-            {/* Storage Condition */}
+            {/* Storage Condition (সংরক্ষণ পদ্ধতি) */}
             <div className="space-y-2 bg-[#F7F9FC] p-4 sm:p-5 rounded-2xl border border-[#E5EBF2]">
               <h3 className="font-extrabold text-[#0D4C3B] flex items-center gap-2 text-sm sm:text-base">
                 <ThermometerSnowflake className="w-4 h-4" />
-                <span>{isEn ? "Storage Conditions" : "সংরক্ষণ পদ্ধতি (Storage Condition)"}</span>
+                <span>{isEn ? "Storage Conditions" : "সংরক্ষণ পদ্ধতি"}</span>
               </h3>
               <p className="text-[#101B32] leading-relaxed pl-6 font-medium text-xs sm:text-sm">
                 {isEn ? med.storage_condition : translateStorageToBn(med.storage_condition)}
               </p>
-              {!isEn && (
-                <p className="text-slate-500 text-xs pl-6">
-                  {med.storage_condition}
-                </p>
-              )}
             </div>
 
           </div>
@@ -376,14 +333,14 @@ export default function MedicineDetailsPage() {
                   <Scale className="w-5 h-5 text-[#0D4C3B]" />
                   <span>
                     {isEn
-                      ? `Price Comparison: Other Brands of ${med.generic_name}`
-                      : `দামের তুলনা: ${med.generic_name}-এর বিকল্প ব্র্যান্ডসমূহ`}
+                      ? `Price Comparison: Alternative Brands of ${med.generic_name}`
+                      : `দামের তুলনা: ${genericBn}-এর বিকল্প ব্র্যান্ডসমূহ`}
                   </span>
                 </h2>
                 <p className="text-xs text-[#7B8AA4]">
                   {isEn
-                    ? "Same active generic molecule from top Bangladeshi manufacturers."
-                    : "একই মূল জেনেরিক উপাদানের বিভিন্ন কোম্পানির ওষুধের খুচরা মূল্যের তুলনা।"}
+                    ? "Market prices of other pharmaceutical brands with the same generic active molecule."
+                    : "একই মূল জেনেরিক উপাদানের বিভিন্ন কোম্পানির ওষুধের বাজারমূল্যের তালিকা।"}
                 </p>
               </div>
             </div>

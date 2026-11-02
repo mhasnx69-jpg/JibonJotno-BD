@@ -1,0 +1,16 @@
+﻿@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    /* মোবাইলে অপ্রত্যাশিত হরাইজন্টাল স্ক্রল বা ওভারফ্লো প্রতিরোধ */
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    overflow-x: hidden;
+    @apply bg-slate-50 text-slate-900 antialiased leading-relaxed;
+  }
+}

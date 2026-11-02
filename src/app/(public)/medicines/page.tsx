@@ -13,12 +13,11 @@ import {
   Scale,
   ShoppingBag,
   Globe,
-  Sparkles,
   ArrowUpDown,
 } from "lucide-react";
 
 const CATEGORIES = [
-  { key: "all", bn: "সকল ওষুধ (২৫+)", en: "All Medicines (25+)" },
+  { key: "all", bn: "সকল ওষুধ (৩২+)", en: "All Medicines (32+)" },
   { key: "pain", bn: "ব্যথানাশক ও জ্বর", en: "Fever & Painkiller" },
   { key: "gastric", bn: "গ্যাস্ট্রিক ও আলসার", en: "Gastric & Ulcer" },
   { key: "antibiotic", bn: "অ্যান্টিবায়োটিক", en: "Antibiotic" },
@@ -38,13 +37,11 @@ export default function MedicinesCatalogPage() {
   const [selectedGeneric, setSelectedGeneric] = useState<string>("All");
   const [addedId, setAddedId] = useState<string | null>(null);
 
-  // Instant 0ms filtering via useMemo
   const filteredMedicines = useMemo(() => {
     const q = search.trim().toLowerCase();
     return MEDICINES_DATA.filter((m) => {
       const catMatch = activeCat === "all" || m.category_key === activeCat;
-      const genMatch =
-        !compareMode || selectedGeneric === "All" || m.generic_en === selectedGeneric;
+      const genMatch = !compareMode || selectedGeneric === "All" || m.generic_en === selectedGeneric;
       const searchMatch =
         !q ||
         m.name_en.toLowerCase().includes(q) ||
@@ -57,14 +54,12 @@ export default function MedicinesCatalogPage() {
     });
   }, [search, activeCat, compareMode, selectedGeneric]);
 
-  // Group by Generic for "দামের তুলনা" (Price Comparison)
   const genericGroups = useMemo(() => {
     const map: Record<string, MedicineRecord[]> = {};
     filteredMedicines.forEach((m) => {
       if (!map[m.generic_en]) map[m.generic_en] = [];
       map[m.generic_en].push(m);
     });
-    // Sort each generic group from lowest price to highest price
     Object.keys(map).forEach((g) => {
       map[g].sort((a, b) => a.unit_price - b.unit_price);
     });
@@ -99,8 +94,6 @@ export default function MedicinesCatalogPage() {
 
   return (
     <div className="min-h-screen bg-[#F7F9FC] text-[#101B32] flex flex-col font-sans">
-      
-      {/* Sticky Top Bar with Language & Cart Controls */}
       <header className="bg-white border-b border-[#E5EBF2] sticky top-0 z-40 shadow-xs">
         <div className="max-w-7xl 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
           <Link
@@ -112,7 +105,6 @@ export default function MedicinesCatalogPage() {
           </Link>
 
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Price Comparison Toggle Button */}
             <button
               type="button"
               onClick={() => setCompareMode(!compareMode)}
@@ -126,7 +118,6 @@ export default function MedicinesCatalogPage() {
               <span>{isEn ? "Compare Prices" : "দামের তুলনা"}</span>
             </button>
 
-            {/* Instant A-to-Z Language Switcher */}
             <button
               type="button"
               onClick={toggleLang}
@@ -136,7 +127,6 @@ export default function MedicinesCatalogPage() {
               <span>{isEn ? "বাংলা দেখুন" : "English View"}</span>
             </button>
 
-            {/* Cart Button */}
             <button
               type="button"
               onClick={() => setIsCartOpen(true)}
@@ -155,8 +145,6 @@ export default function MedicinesCatalogPage() {
       </header>
 
       <main className="flex-1 max-w-7xl 2xl:max-w-[1600px] mx-auto w-full px-3 sm:px-6 lg:px-8 py-6 space-y-6">
-        
-        {/* Hero Search Banner */}
         <div className="bg-[#0D4C3B] rounded-3xl p-6 sm:p-8 text-white space-y-4 shadow-xl">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="space-y-1">
@@ -199,7 +187,6 @@ export default function MedicinesCatalogPage() {
             </div>
           </div>
 
-          {/* Instant Search Bar */}
           <div className="relative max-w-3xl">
             <Search className="w-4 h-4 text-[#7B8AA4] absolute left-4 top-3.5" />
             <input
@@ -215,7 +202,6 @@ export default function MedicinesCatalogPage() {
             />
           </div>
 
-          {/* Category Filter Pills */}
           <div className="flex items-center gap-2 overflow-x-auto pb-1 pt-1 scrollbar-none">
             {CATEGORIES.map((cat) => (
               <button
@@ -234,10 +220,8 @@ export default function MedicinesCatalogPage() {
           </div>
         </div>
 
-        {/* PRICE COMPARISON VIEW ("দামের তুলনা") */}
         {compareMode ? (
           <div className="space-y-6">
-            {/* Generic Selector Bar */}
             <div className="bg-white p-4 rounded-2xl border border-[#E5EBF2] flex flex-wrap items-center gap-2">
               <span className="text-xs font-extrabold text-[#0D4C3B] mr-2 flex items-center gap-1">
                 <ArrowUpDown className="w-3.5 h-3.5" />
@@ -277,7 +261,7 @@ export default function MedicinesCatalogPage() {
                     </div>
                     <span className="text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-xl">
                       {isEn
-                        ? `${items.length} Alternative Brand(s) • Lowest: BDT ${lowestPrice.toFixed(2)}`
+                        ? `${items.length} Brand(s) • Lowest: BDT ${lowestPrice.toFixed(2)}`
                         : `${items.length}টি বিকল্প ব্র্যান্ড • সর্বনিম্ন মূল্য: ৳ ${lowestPrice.toFixed(2)}`}
                     </span>
                   </div>
@@ -353,7 +337,6 @@ export default function MedicinesCatalogPage() {
             })}
           </div>
         ) : (
-          /* STANDARD 2-COLUMN SCREENSHOT-EXACT CARD CATALOG */
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {filteredMedicines.map((med) => (
               <div
@@ -411,7 +394,6 @@ export default function MedicinesCatalogPage() {
                   </div>
                 </div>
 
-                {/* Bottom Actions */}
                 <div className="pt-3 border-t border-[#F1F5F9] flex items-center justify-between gap-2">
                   <div>
                     <span className="text-[10px] text-[#7B8AA4] block">
@@ -437,7 +419,7 @@ export default function MedicinesCatalogPage() {
 
                     <Link
                       href={`/medicines/${med.slug}`}
-                      className="px-3 py-2 rounded-xl bg-[#F7F9FC] hover:bg-[#E5EBF2] text-[#101B32] text-xs font-bold border border-[#E5EBF2] transition-colors"
+                      className="px-3 py-2 rounded-xl bg-[#F7F9FC] hover:bg-[#E5EBF2] text-[#101B32] text-xs font-bold border border-[#E5EBF2]"
                     >
                       {isEn ? "Details" : "বিস্তারিত"}
                     </Link>
@@ -445,7 +427,7 @@ export default function MedicinesCatalogPage() {
                     <button
                       type="button"
                       onClick={() => handleOrderClick(med)}
-                      className="px-3.5 py-2 rounded-xl bg-[#0D4C3B] hover:bg-[#12614A] text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1"
+                      className="px-3.5 py-2 rounded-xl bg-[#0D4C3B] hover:bg-[#12614A] text-white text-xs font-bold shadow-xs flex items-center gap-1"
                     >
                       {addedId === med.id ? (
                         <>
@@ -462,7 +444,6 @@ export default function MedicinesCatalogPage() {
             ))}
           </div>
         )}
-
       </main>
     </div>
   );

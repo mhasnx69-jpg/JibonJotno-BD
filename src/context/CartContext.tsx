@@ -27,7 +27,6 @@ interface CartContextType {
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
-
 const STORAGE_KEY = "jibonjotno_cart_v2";
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
@@ -57,12 +56,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const addToCart = (newItem: CartItem) => {
     if (!newItem || !newItem.product_id) return;
     setCart((prev) => {
-      const existingIndex = prev.findIndex((i) => i.product_id === newItem.product_id);
-      if (existingIndex > -1) {
+      const idx = prev.findIndex((i) => i.product_id === newItem.product_id);
+      if (idx > -1) {
         const updated = [...prev];
-        updated[existingIndex] = {
-          ...updated[existingIndex],
-          quantity: updated[existingIndex].quantity + (newItem.quantity || 1),
+        updated[idx] = {
+          ...updated[idx],
+          quantity: updated[idx].quantity + (newItem.quantity || 1),
         };
         return updated;
       }
@@ -80,19 +79,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       return;
     }
     setCart((prev) =>
-      prev.map((item) =>
-        item.product_id === productId ? { ...item, quantity } : item
-      )
+      prev.map((item) => (item.product_id === productId ? { ...item, quantity } : item))
     );
   };
 
-  const clearCart = () => {
-    setCart([]);
-  };
+  const clearCart = () => setCart([]);
 
-  const getSubtotal = () => {
-    return cart.reduce((sum, item) => sum + Number(item.unit_price || 0) * Number(item.quantity || 1), 0);
-  };
+  const getSubtotal = () =>
+    cart.reduce((sum, item) => sum + Number(item.unit_price || 0) * Number(item.quantity || 1), 0);
 
   const totalPrice = getSubtotal();
   const totalItems = cart.reduce((sum, item) => sum + Number(item.quantity || 0), 0);
@@ -121,7 +115,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 export function useCart() {
   const context = useContext(CartContext);
   if (!context) {
-    // Fallback safe object so it NEVER crashes any component
     return {
       cart: [],
       items: [],

@@ -13,7 +13,6 @@ import {
   Trash2,
   ShoppingBag,
   ArrowRight,
-  ShieldCheck,
   Truck,
   CheckCircle2,
   Phone,
@@ -27,7 +26,6 @@ export default function CartDrawer() {
   const isEn = lang === "en";
   const { cart, isCartOpen, setIsCartOpen, updateQuantity, removeFromCart, getSubtotal, clearCart } = useCart();
 
-  // Quick Order inside drawer for maximum user-friendliness
   const [quickOrderMode, setQuickOrderMode] = useState(false);
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
@@ -46,7 +44,6 @@ export default function CartDrawer() {
     e.preventDefault();
     if (!customerName.trim() || !customerPhone.trim() || !customerAddress.trim()) return;
     setSubmitting(true);
-
     const generatedOrderNo = "JJ-" + Math.floor(100000 + Math.random() * 900000);
 
     try {
@@ -64,7 +61,7 @@ export default function CartDrawer() {
         status: "pending",
       });
     } catch (err) {
-      console.warn("Saved locally:", err);
+      console.warn("Order saved locally:", err);
     }
 
     setSubmitting(false);
@@ -75,13 +72,11 @@ export default function CartDrawer() {
   return (
     <div className="fixed inset-0 z-50 flex justify-end font-sans">
       <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity"
+        className="fixed inset-0 bg-black/50 backdrop-blur-xs"
         onClick={() => setIsCartOpen(false)}
       />
 
       <div className="relative w-full max-w-md bg-white h-full shadow-2xl flex flex-col z-10 border-l border-[#E5EBF2]">
-        
-        {/* Header */}
         <div className="px-5 py-4 border-b border-[#E5EBF2] flex items-center justify-between bg-[#0D4C3B] text-white">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-white/15 flex items-center justify-center">
@@ -93,7 +88,7 @@ export default function CartDrawer() {
               </h2>
               <p className="text-[11px] text-emerald-200">
                 {isEn
-                  ? `${cart.length} item(s) added • 100% Cash on Delivery`
+                  ? `${cart.length} item(s) • 100% Cash on Delivery`
                   : `মোট ${cart.length}টি ওষুধ যুক্ত • ১০০% ক্যাশ অন ডেলিভারি`}
               </p>
             </div>
@@ -104,13 +99,12 @@ export default function CartDrawer() {
               setOrderDoneId(null);
               setQuickOrderMode(false);
             }}
-            className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors"
+            className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Body */}
         <div className="flex-1 overflow-y-auto p-5 space-y-4">
           {orderDoneId ? (
             <div className="py-10 text-center space-y-4">
@@ -120,11 +114,6 @@ export default function CartDrawer() {
               <h3 className="text-xl font-black text-[#101B32]">
                 {isEn ? "Order Confirmed!" : "আপনার অর্ডার সফল হয়েছে!"}
               </h3>
-              <p className="text-xs text-[#7B8AA4] max-w-xs mx-auto">
-                {isEn
-                  ? "Our pharmacist will call you shortly to confirm dispatch."
-                  : "আমাদের রেজিস্টার্ড ফার্মাসিস্ট খুব শীঘ্রই কল করে ডেলিভারি নিশ্চিত করবেন।"}
-              </p>
               <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200">
                 <span className="text-[11px] text-emerald-800 block">
                   {isEn ? "Tracking Order ID:" : "অর্ডার ট্র্যাকিং নম্বর:"}
@@ -133,19 +122,17 @@ export default function CartDrawer() {
                   {orderDoneId}
                 </span>
               </div>
-              <div className="flex flex-col gap-2 pt-2">
-                <button
-                  onClick={() => {
-                    setIsCartOpen(false);
-                    setOrderDoneId(null);
-                    setQuickOrderMode(false);
-                    router.push("/order-tracking");
-                  }}
-                  className="w-full py-3 rounded-xl bg-[#0D4C3B] text-white text-xs font-bold"
-                >
-                  {isEn ? "Track Live Order" : "লাইভ অর্ডার ট্র্যাক করুন"}
-                </button>
-              </div>
+              <button
+                onClick={() => {
+                  setIsCartOpen(false);
+                  setOrderDoneId(null);
+                  setQuickOrderMode(false);
+                  router.push("/order-tracking");
+                }}
+                className="w-full py-3 rounded-xl bg-[#0D4C3B] text-white text-xs font-bold"
+              >
+                {isEn ? "Track Live Order" : "লাইভ অর্ডার ট্র্যাক করুন"}
+              </button>
             </div>
           ) : cart.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-center space-y-3 py-12">
@@ -178,7 +165,7 @@ export default function CartDrawer() {
 
               <div className="space-y-1">
                 <label className="text-xs font-bold text-[#101B32]">
-                  {isEn ? "Patient / Receiver Name *" : "রোগী বা গ্রহণকারীর নাম *"}
+                  {isEn ? "Full Name *" : "রোগী বা গ্রহণকারীর নাম *"}
                 </label>
                 <div className="relative">
                   <User className="w-4 h-4 text-[#7B8AA4] absolute left-3 top-3" />
@@ -188,7 +175,7 @@ export default function CartDrawer() {
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
                     placeholder={isEn ? "Enter your full name" : "আপনার নাম লিখুন"}
-                    className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-[#E5EBF2] text-xs bg-[#F7F9FC] focus:outline-none focus:border-[#0D4C3B]"
+                    className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-[#E5EBF2] text-xs bg-[#F7F9FC]"
                   />
                 </div>
               </div>
@@ -206,44 +193,39 @@ export default function CartDrawer() {
                     value={customerPhone}
                     onChange={(e) => setCustomerPhone(e.target.value)}
                     placeholder="017XXXXXXXX"
-                    className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-[#E5EBF2] text-xs bg-[#F7F9FC] focus:outline-none focus:border-[#0D4C3B]"
+                    className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-[#E5EBF2] text-xs bg-[#F7F9FC]"
                   />
                 </div>
               </div>
 
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-[#101B32]">
-                  {isEn ? "Delivery Area *" : "ডেলিভারি এলাকা *"}
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setZone("dhaka")}
-                    className={`py-2 px-3 rounded-xl text-xs font-bold border ${
-                      zone === "dhaka"
-                        ? "bg-emerald-50 border-[#0D4C3B] text-[#0D4C3B]"
-                        : "border-[#E5EBF2] text-[#7B8AA4]"
-                    }`}
-                  >
-                    {isEn ? "Inside Dhaka (৳60)" : "ঢাকার ভেতরে (৳৬০)"}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setZone("outside")}
-                    className={`py-2 px-3 rounded-xl text-xs font-bold border ${
-                      zone === "outside"
-                        ? "bg-emerald-50 border-[#0D4C3B] text-[#0D4C3B]"
-                        : "border-[#E5EBF2] text-[#7B8AA4]"
-                    }`}
-                  >
-                    {isEn ? "Outside Dhaka (৳120)" : "ঢাকার বাইরে (৳১২০)"}
-                  </button>
-                </div>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setZone("dhaka")}
+                  className={`py-2 px-3 rounded-xl text-xs font-bold border ${
+                    zone === "dhaka"
+                      ? "bg-emerald-50 border-[#0D4C3B] text-[#0D4C3B]"
+                      : "border-[#E5EBF2] text-[#7B8AA4]"
+                  }`}
+                >
+                  {isEn ? "Inside Dhaka (৳60)" : "ঢাকার ভেতরে (৳৬০)"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setZone("outside")}
+                  className={`py-2 px-3 rounded-xl text-xs font-bold border ${
+                    zone === "outside"
+                      ? "bg-emerald-50 border-[#0D4C3B] text-[#0D4C3B]"
+                      : "border-[#E5EBF2] text-[#7B8AA4]"
+                  }`}
+                >
+                  {isEn ? "Outside Dhaka (৳120)" : "ঢাকার বাইরে (৳১২০)"}
+                </button>
               </div>
 
               <div className="space-y-1">
                 <label className="text-xs font-bold text-[#101B32]">
-                  {isEn ? "Full Delivery Address *" : "পূর্ণ ডেলিভারি ঠিকানা (বাসা, রোড, এলাকা) *"}
+                  {isEn ? "Full Delivery Address *" : "পূর্ণ ডেলিভারি ঠিকানা *"}
                 </label>
                 <div className="relative">
                   <MapPin className="w-4 h-4 text-[#7B8AA4] absolute left-3 top-3" />
@@ -253,7 +235,7 @@ export default function CartDrawer() {
                     value={customerAddress}
                     onChange={(e) => setCustomerAddress(e.target.value)}
                     placeholder={isEn ? "House, Road, Area, Thana..." : "বাসা নম্বর, রোড, মহল্লা, থানা..."}
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#E5EBF2] text-xs bg-[#F7F9FC] focus:outline-none focus:border-[#0D4C3B]"
+                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#E5EBF2] text-xs bg-[#F7F9FC]"
                   />
                 </div>
               </div>
@@ -262,40 +244,30 @@ export default function CartDrawer() {
             cart.map((item) => (
               <div
                 key={item.product_id}
-                className="p-3.5 rounded-2xl border border-[#E5EBF2] bg-[#F7F9FC] hover:border-emerald-300 transition-all flex items-center justify-between gap-3"
+                className="p-3.5 rounded-2xl border border-[#E5EBF2] bg-[#F7F9FC] flex items-center justify-between gap-3"
               >
                 <div className="flex-1 min-w-0">
                   <h4 className="text-xs sm:text-sm font-extrabold text-[#101B32] truncate">
                     {isEn ? item.name_en : item.name_bn}
                   </h4>
-                  <p className="text-[11px] text-[#7B8AA4] truncate">
-                    {isEn ? item.name_bn : item.name_en}
-                  </p>
-                  <div className="flex items-center gap-2 pt-1">
-                    <span className="text-xs font-black text-[#0D4C3B]">
-                      ৳ {(item.unit_price * item.quantity).toFixed(2)}
-                    </span>
-                    <span className="text-[10px] text-slate-500">
-                      (৳{item.unit_price} × {item.quantity})
-                    </span>
-                  </div>
+                  <span className="text-xs font-black text-[#0D4C3B]">
+                    ৳ {(item.unit_price * item.quantity).toFixed(2)}
+                  </span>
                 </div>
 
-                <div className="flex items-center gap-1.5 bg-white border border-[#E5EBF2] rounded-xl p-1 shadow-2xs">
+                <div className="flex items-center gap-1.5 bg-white border border-[#E5EBF2] rounded-xl p-1">
                   <button
                     type="button"
                     onClick={() => updateQuantity(item.product_id, item.quantity - 1)}
-                    className="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-700 font-bold"
+                    className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center font-bold"
                   >
                     <Minus className="w-3.5 h-3.5" />
                   </button>
-                  <span className="w-7 text-center text-xs font-black text-[#101B32]">
-                    {item.quantity}
-                  </span>
+                  <span className="w-7 text-center text-xs font-black">{item.quantity}</span>
                   <button
                     type="button"
                     onClick={() => updateQuantity(item.product_id, item.quantity + 1)}
-                    className="w-7 h-7 rounded-lg bg-[#0D4C3B] hover:bg-[#12614A] text-white flex items-center justify-center font-bold"
+                    className="w-7 h-7 rounded-lg bg-[#0D4C3B] text-white flex items-center justify-center font-bold"
                   >
                     <Plus className="w-3.5 h-3.5" />
                   </button>
@@ -304,7 +276,7 @@ export default function CartDrawer() {
                 <button
                   type="button"
                   onClick={() => removeFromCart(item.product_id)}
-                  className="p-1.5 text-slate-400 hover:text-rose-600 transition-colors"
+                  className="p-1.5 text-slate-400 hover:text-rose-600"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -313,7 +285,6 @@ export default function CartDrawer() {
           )}
         </div>
 
-        {/* Footer */}
         {cart.length > 0 && !orderDoneId && (
           <div className="p-5 border-t border-[#E5EBF2] bg-white space-y-3">
             <div className="space-y-1 text-xs">
@@ -344,7 +315,7 @@ export default function CartDrawer() {
                 <span>
                   {submitting
                     ? isEn
-                      ? "Confirming Order..."
+                      ? "Confirming..."
                       : "অর্ডার নিশ্চিত হচ্ছে..."
                     : isEn
                     ? "Confirm Cash on Delivery Order"
@@ -357,7 +328,7 @@ export default function CartDrawer() {
                 <button
                   type="button"
                   onClick={() => setQuickOrderMode(true)}
-                  className="w-full py-3.5 rounded-2xl bg-[#0D4C3B] hover:bg-[#12614A] text-white font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md transition-all"
+                  className="w-full py-3.5 rounded-2xl bg-[#0D4C3B] hover:bg-[#12614A] text-white font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md"
                 >
                   <span>
                     {isEn ? "1-Click Easy Order (Cash on Delivery)" : "সহজ অর্ডার করুন (ক্যাশ অন ডেলিভারি)"}
@@ -375,7 +346,6 @@ export default function CartDrawer() {
             )}
           </div>
         )}
-
       </div>
     </div>
   );

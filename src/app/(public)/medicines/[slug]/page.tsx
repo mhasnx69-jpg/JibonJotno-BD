@@ -8,7 +8,6 @@ import { useCart } from "@/context/CartContext";
 import { useLanguage } from "@/context/LanguageContext";
 import {
   ArrowLeft,
-  Building2,
   ShieldAlert,
   ShoppingBag,
   BookOpen,
@@ -30,14 +29,10 @@ export default function MedicineDetailsPage() {
   const { addToCart, setIsCartOpen, totalItems } = useCart();
   const [addedId, setAddedId] = useState<string | null>(null);
 
-  // Instant lookup
   const med: MedicineRecord = useMemo(() => {
-    return (
-      MEDICINES_DATA.find((m) => m.slug === slug) || MEDICINES_DATA[0]
-    );
+    return MEDICINES_DATA.find((m) => m.slug === slug) || MEDICINES_DATA[0];
   }, [slug]);
 
-  // Alternative brands with the exact same generic for instant price comparison
   const alternatives = useMemo(() => {
     return MEDICINES_DATA.filter((m) => m.generic_en === med.generic_en).sort(
       (a, b) => a.unit_price - b.unit_price
@@ -61,8 +56,6 @@ export default function MedicineDetailsPage() {
 
   return (
     <div className="min-h-screen bg-[#F7F9FC] text-[#101B32] flex flex-col font-sans">
-      
-      {/* Top Sticky Header with Instant A-to-Z Language Switcher */}
       <header className="bg-white border-b border-[#E5EBF2] sticky top-0 z-40 shadow-xs">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
           <Link
@@ -74,11 +67,10 @@ export default function MedicineDetailsPage() {
           </Link>
 
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Language Toggle Button */}
             <button
               type="button"
               onClick={toggleLang}
-              className="px-3.5 py-2 rounded-xl border border-[#0D4C3B]/30 bg-emerald-50 hover:bg-emerald-100 text-xs font-extrabold text-[#0D4C3B] flex items-center gap-1.5 transition-all"
+              className="px-3.5 py-2 rounded-xl border border-[#0D4C3B]/30 bg-emerald-50 hover:bg-emerald-100 text-xs font-extrabold text-[#0D4C3B] flex items-center gap-1.5"
             >
               <Globe className="w-4 h-4" />
               <span>{isEn ? "বাংলায় সম্পূর্ণ তথ্য দেখুন" : "Read Full Info in English"}</span>
@@ -97,8 +89,6 @@ export default function MedicineDetailsPage() {
       </header>
 
       <main className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        
-        {/* SECTION 1: BASIC INFORMATION (প্রাথমিক পরিচিতি) */}
         <div className="bg-white rounded-3xl border border-[#E5EBF2] p-6 sm:p-8 shadow-xs space-y-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-[#F1F5F9] pb-6">
             <div className="space-y-2">
@@ -138,7 +128,6 @@ export default function MedicineDetailsPage() {
               </p>
             </div>
 
-            {/* Price & Direct Order Box */}
             <div className="bg-[#F7F9FC] p-5 rounded-2xl border border-[#E5EBF2] min-w-[240px] space-y-2">
               <div className="flex justify-between items-center text-xs text-[#7B8AA4]">
                 <span>{isEn ? `Unit Price (Per ${med.pack_unit_en}):` : `প্রতি ${med.pack_unit_bn} মূল্য:`}</span>
@@ -152,7 +141,7 @@ export default function MedicineDetailsPage() {
               <button
                 type="button"
                 onClick={() => handleOrder(med)}
-                className="w-full mt-2 py-3 px-4 rounded-xl bg-[#0D4C3B] hover:bg-[#12614A] text-white text-xs sm:text-sm font-extrabold shadow-sm transition-all flex items-center justify-center gap-2"
+                className="w-full mt-2 py-3 px-4 rounded-xl bg-[#0D4C3B] hover:bg-[#12614A] text-white text-xs sm:text-sm font-extrabold shadow-sm flex items-center justify-center gap-2"
               >
                 {addedId === med.id ? <Check className="w-4 h-4" /> : <ShoppingBag className="w-4 h-4" />}
                 <span>
@@ -168,7 +157,6 @@ export default function MedicineDetailsPage() {
             </div>
           </div>
 
-          {/* 4-Column Specification Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
             <div className="bg-[#F7F9FC] p-4 rounded-2xl border border-[#E5EBF2]">
               <span className="text-[#7B8AA4] block text-[11px]">
@@ -208,139 +196,96 @@ export default function MedicineDetailsPage() {
           </div>
         </div>
 
-        {/* SECTION 2: CLINICAL INFORMATION (চিকিৎসা সংক্রান্ত তথ্য) */}
         <div className="bg-white rounded-3xl border border-[#E5EBF2] p-6 sm:p-8 shadow-xs space-y-6">
-          <div className="border-b border-[#F1F5F9] pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <div>
-              <h2 className="text-lg sm:text-xl font-black text-[#101B32] flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-[#0D4C3B]" />
-                <span>
-                  {isEn
-                    ? "2. Clinical & Medical Information (A to Z)"
-                    : "২. চিকিৎসা সংক্রান্ত বিস্তারিত তথ্য (Clinical Information)"}
-                </span>
-              </h2>
-              <p className="text-xs text-[#7B8AA4] pt-0.5">
+          <div className="border-b border-[#F1F5F9] pb-4">
+            <h2 className="text-lg sm:text-xl font-black text-[#101B32] flex items-center gap-2">
+              <BookOpen className="w-5 h-5 text-[#0D4C3B]" />
+              <span>
                 {isEn
-                  ? "Prepared in accordance with standard pharmacological and registered clinical guidelines."
-                  : "রেজিস্টার্ড চিকিৎসকদের প্রেসক্রিপশন ও ফার্মাকোলজিক্যাল নির্দেশিকা অনুযায়ী প্রস্তুতকৃত।"}
-              </p>
-            </div>
+                  ? "2. Clinical & Medical Information (A to Z)"
+                  : "২. চিকিৎসা সংক্রান্ত বিস্তারিত তথ্য (Clinical Information)"}
+              </span>
+            </h2>
           </div>
 
           <div className="grid grid-cols-1 gap-4 text-xs sm:text-sm">
-            
-            {/* 1. Indications */}
             <div className="space-y-1.5 bg-[#F7F9FC] p-4 sm:p-5 rounded-2xl border border-[#E5EBF2]">
               <h3 className="font-extrabold text-[#0D4C3B] flex items-center gap-2 text-sm sm:text-base">
                 <span>🎯</span>
-                <span>
-                  {isEn
-                    ? "Indications (Uses & Prescribed Conditions)"
-                    : "ব্যবহার বা নির্দেশনা (Indications)"}
-                </span>
+                <span>{isEn ? "Indications (Uses)" : "ব্যবহার বা নির্দেশনা (Indications)"}</span>
               </h3>
               <p className="text-[#101B32] leading-relaxed pl-6">
                 {isEn ? med.indications_en : med.indications_bn}
               </p>
             </div>
 
-            {/* 2. Therapeutic Class */}
             <div className="space-y-1.5 bg-[#F7F9FC] p-4 sm:p-5 rounded-2xl border border-[#E5EBF2]">
               <h3 className="font-extrabold text-[#0D4C3B] flex items-center gap-2 text-sm sm:text-base">
                 <span>🔬</span>
-                <span>
-                  {isEn ? "Therapeutic Class" : "ওষুধের শ্রেণী (Therapeutic Class)"}
-                </span>
+                <span>{isEn ? "Therapeutic Class" : "ওষুধের শ্রেণী (Therapeutic Class)"}</span>
               </h3>
               <p className="text-[#101B32] leading-relaxed pl-6 font-semibold">
                 {isEn ? med.therapeutic_class_en : med.therapeutic_class_bn}
               </p>
             </div>
 
-            {/* 3. Pharmacology */}
             <div className="space-y-1.5 bg-[#F7F9FC] p-4 sm:p-5 rounded-2xl border border-[#E5EBF2]">
               <h3 className="font-extrabold text-[#0D4C3B] flex items-center gap-2 text-sm sm:text-base">
                 <span>⚙️</span>
-                <span>
-                  {isEn
-                    ? "Pharmacology (Mechanism of Action)"
-                    : "কার্যপদ্ধতি (Pharmacology)"}
-                </span>
+                <span>{isEn ? "Pharmacology (Mechanism of Action)" : "কার্যপদ্ধতি (Pharmacology)"}</span>
               </h3>
               <p className="text-[#101B32] leading-relaxed pl-6">
                 {isEn ? med.pharmacology_en : med.pharmacology_bn}
               </p>
             </div>
 
-            {/* 4. Dosage & Administration */}
             <div className="space-y-1.5 bg-emerald-50/70 p-4 sm:p-5 rounded-2xl border border-emerald-200">
               <h3 className="font-extrabold text-emerald-900 flex items-center gap-2 text-sm sm:text-base">
                 <Clock className="w-4 h-4 text-emerald-700" />
-                <span>
-                  {isEn
-                    ? "Dosage & Administration (Adult & Pediatric Rules)"
-                    : "সেবনমাত্রা ও নিয়ম (Dosage & Administration)"}
-                </span>
+                <span>{isEn ? "Dosage & Administration" : "সেবনমাত্রা ও নিয়ম (Dosage & Administration)"}</span>
               </h3>
               <p className="text-emerald-950 leading-relaxed pl-6 font-medium">
                 {isEn ? med.dosage_en : med.dosage_bn}
               </p>
             </div>
 
-            {/* 5. Drug Interactions */}
             <div className="space-y-1.5 bg-amber-50/70 p-4 sm:p-5 rounded-2xl border border-amber-200">
               <h3 className="font-extrabold text-amber-900 flex items-center gap-2 text-sm sm:text-base">
                 <AlertTriangle className="w-4 h-4 text-amber-700" />
-                <span>
-                  {isEn
-                    ? "Drug Interactions (With Other Medications)"
-                    : "অন্য ওষুধের সাথে বিক্রিয়া (Interaction)"}
-                </span>
+                <span>{isEn ? "Drug Interactions" : "অন্য ওষুধের সাথে বিক্রিয়া (Interaction)"}</span>
               </h3>
               <p className="text-amber-950 leading-relaxed pl-6">
                 {isEn ? med.interaction_en : med.interaction_bn}
               </p>
             </div>
 
-            {/* 6. Contraindications */}
             <div className="space-y-1.5 bg-rose-50/70 p-4 sm:p-5 rounded-2xl border border-rose-200">
               <h3 className="font-extrabold text-rose-900 flex items-center gap-2 text-sm sm:text-base">
                 <ShieldAlert className="w-4 h-4 text-rose-700" />
-                <span>
-                  {isEn
-                    ? "Contraindications (When Not to Take)"
-                    : "প্রতিনির্দেশনা বা নিষেধাজ্ঞা (Contraindications)"}
-                </span>
+                <span>{isEn ? "Contraindications" : "প্রতিনির্দেশনা বা নিষেধাজ্ঞা (Contraindications)"}</span>
               </h3>
               <p className="text-rose-950 leading-relaxed pl-6">
                 {isEn ? med.contraindications_en : med.contraindications_bn}
               </p>
             </div>
 
-            {/* 7. Side Effects */}
             <div className="space-y-1.5 bg-[#F7F9FC] p-4 sm:p-5 rounded-2xl border border-[#E5EBF2]">
               <h3 className="font-extrabold text-[#101B32] flex items-center gap-2 text-sm sm:text-base">
                 <HeartPulse className="w-4 h-4 text-rose-600" />
-                <span>
-                  {isEn ? "Side Effects" : "পার্শ্বপ্রতিক্রিয়া (Side Effects)"}
-                </span>
+                <span>{isEn ? "Side Effects" : "পার্শ্বপ্রতিক্রিয়া (Side Effects)"}</span>
               </h3>
               <p className="text-[#101B32] leading-relaxed pl-6">
                 {isEn ? med.side_effects_en : med.side_effects_bn}
               </p>
             </div>
 
-            {/* 8. Pregnancy & Storage */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="bg-[#F7F9FC] p-4 rounded-2xl border border-[#E5EBF2] space-y-1">
                 <h4 className="font-extrabold text-[#0D4C3B] flex items-center gap-1.5">
                   <Baby className="w-4 h-4" />
-                  <span>
-                    {isEn ? "Pregnancy & Lactation" : "গর্ভাবস্থা ও স্তন্যদানকালে ব্যবহার"}
-                  </span>
+                  <span>{isEn ? "Pregnancy & Lactation" : "গর্ভাবস্থা ও স্তন্যদানকালে ব্যবহার"}</span>
                 </h4>
-                <p className="text-xs text-[#334155] leading-relaxed">
+                <p className="text-xs text-[#334155]">
                   {isEn ? med.pregnancy_cat_en : med.pregnancy_cat_bn}
                 </p>
               </div>
@@ -348,38 +293,25 @@ export default function MedicineDetailsPage() {
               <div className="bg-[#F7F9FC] p-4 rounded-2xl border border-[#E5EBF2] space-y-1">
                 <h4 className="font-extrabold text-[#0D4C3B] flex items-center gap-1.5">
                   <ThermometerSnowflake className="w-4 h-4" />
-                  <span>
-                    {isEn ? "Storage Conditions" : "সংরক্ষণ বিধি (Storage)"}
-                  </span>
+                  <span>{isEn ? "Storage Conditions" : "সংরক্ষণ বিধি (Storage)"}</span>
                 </h4>
-                <p className="text-xs text-[#334155] leading-relaxed">
+                <p className="text-xs text-[#334155]">
                   {isEn ? med.storage_en : med.storage_bn}
                 </p>
               </div>
             </div>
-
           </div>
         </div>
 
-        {/* SECTION 3: ALTERNATIVE BRANDS & PRICE COMPARISON (দামের তুলনা) */}
         <div className="bg-white rounded-3xl border border-[#E5EBF2] p-6 sm:p-8 shadow-xs space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#F1F5F9] pb-3">
-            <div>
-              <h2 className="text-base sm:text-lg font-black text-[#101B32] flex items-center gap-2">
-                <Scale className="w-5 h-5 text-[#0D4C3B]" />
-                <span>
-                  {isEn
-                    ? `Price Comparison: Other Brands of ${med.generic_en}`
-                    : `দামের তুলনা: ${med.generic_bn} (${med.generic_en})-এর বিকল্প ব্র্যান্ডসমূহ`}
-                </span>
-              </h2>
-              <p className="text-xs text-[#7B8AA4]">
-                {isEn
-                  ? "Same active generic ingredient from top Bangladeshi pharmaceutical companies."
-                  : "একই জেনেরিক উপাদানের বিভিন্ন কোম্পানির ওষুধ ও খুচরা মূল্যের তুলনা।"}
-              </p>
-            </div>
-          </div>
+          <h2 className="text-base sm:text-lg font-black text-[#101B32] flex items-center gap-2">
+            <Scale className="w-5 h-5 text-[#0D4C3B]" />
+            <span>
+              {isEn
+                ? `Price Comparison: Other Brands of ${med.generic_en}`
+                : `দামের তুলনা: ${med.generic_bn} (${med.generic_en})-এর বিকল্প ব্র্যান্ডসমূহ`}
+            </span>
+          </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {alternatives.map((alt) => (
@@ -392,17 +324,10 @@ export default function MedicineDetailsPage() {
                 }`}
               >
                 <div>
-                  <div className="flex justify-between items-center text-[10px] font-bold text-[#7B8AA4]">
-                    <span>
-                      {isEn ? alt.dosage_form_en : alt.dosage_form_bn} •{" "}
-                      {isEn ? alt.strength_en : alt.strength_bn}
-                    </span>
-                    {alt.id === med.id && (
-                      <span className="text-[#0D4C3B] font-extrabold">
-                        {isEn ? "Viewing Now" : "বর্তমানে দেখছেন"}
-                      </span>
-                    )}
-                  </div>
+                  <span className="text-[10px] font-bold text-[#7B8AA4]">
+                    {isEn ? alt.dosage_form_en : alt.dosage_form_bn} •{" "}
+                    {isEn ? alt.strength_en : alt.strength_bn}
+                  </span>
                   <Link href={`/medicines/${alt.slug}`}>
                     <h3 className="text-sm font-black text-[#101B32] hover:text-[#0D4C3B] pt-1">
                       {isEn ? alt.name_en : alt.name_bn}
@@ -439,7 +364,6 @@ export default function MedicineDetailsPage() {
             ))}
           </div>
         </div>
-
       </main>
     </div>
   );

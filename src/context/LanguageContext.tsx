@@ -23,22 +23,16 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     try {
       const saved = localStorage.getItem("jibonjotno_lang") as Language;
-      if (saved === "bn" || saved === "en") {
-        setLangState(saved);
-      }
+      if (saved === "bn" || saved === "en") setLangState(saved);
     } catch (e) {}
   }, []);
 
   const setLang = (newLang: Language) => {
     setLangState(newLang);
-    try {
-      localStorage.setItem("jibonjotno_lang", newLang);
-    } catch (e) {}
+    try { localStorage.setItem("jibonjotno_lang", newLang); } catch (e) {}
   };
 
-  const toggleLang = () => {
-    setLang(lang === "bn" ? "en" : "bn");
-  };
+  const toggleLang = () => setLang(lang === "bn" ? "en" : "bn");
 
   return (
     <LanguageContext.Provider

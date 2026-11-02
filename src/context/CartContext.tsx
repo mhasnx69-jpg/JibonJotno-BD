@@ -3,21 +3,28 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 export interface CartItem {
+  id?: string;
   product_id: string;
-  medicine_id: string;
-  name_bn: string;
-  name_en: string;
+  medicine_id?: string;
+  name?: string;
+  name_bn?: string;
+  name_en?: string;
+  price?: number;
   unit_price: number;
-  pack_unit: string;
+  strip_price?: number;
+  pack_unit?: string;
   quantity: number;
+  image?: string;
+  image_url?: string;
+  [key: string]: any;
 }
 
-interface CartContextType {
+export interface CartContextType {
   cart: CartItem[];
   items: CartItem[];
   isCartOpen: boolean;
   setIsCartOpen: (open: boolean) => void;
-  addToCart: (item: CartItem) => void;
+  addToCart: (item: any) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
@@ -25,6 +32,7 @@ interface CartContextType {
   subtotal: number;
   totalPrice: number;
   totalItems: number;
+  [key: string]: any;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -41,23 +49,20 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed)) setCart(parsed);
       }
-    } catch (e) {
-      console.warn("Cart load error:", e);
-    }
+    } catch (e) {}
   }, []);
 
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
-    } catch (e) {
-      console.warn("Cart save error:", e);
-    }
+    } catch (e) {}
   }, [cart]);
 
-  const addToCart = (newItem: CartItem) => {
-    if (!newItem || !newItem.product_id) return;
+  const addToCart = (newItem: any) => {
+    if (!newItem) return;
+    const pId = newItem.product_id || newItem.id || "item_" + Date.now();
     setCart((prev) => {
-      const idx = prev.findIndex((i) => i.product_id === newItem.product_id);
+      const idx = prev.findIndex((i) => (i.product_id || i.id) === pId);
       if (idx > -1) {
         const updated = [...prev];
         updated[idx] = {
@@ -66,12 +71,22 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         };
         return updated;
       }
-      return [...prev, { ...newItem, quantity: newItem.quantity || 1 }];
+      return [
+        ...prev,
+        {
+          ...newItem,
+          product_id: pId,
+          id: pId,
+          unit_price: Number(newItem.unit_price || newItem.price || 0),
+          price: Number(newItem.unit_price || newItem.price || 0),
+          quantity: newItem.quantity || 1,
+        },
+      ];
     });
   };
 
   const removeFromCart = (productId: string) => {
-    setCart((prev) => prev.filter((item) => item.product_id !== productId));
+    setCart((prev) => prev.filter((item) => (item.product_id || item.id) !== productId));
   };
 
   const updateQuantity = (productId: string, quantity: number) => {
@@ -80,14 +95,20 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       return;
     }
     setCart((prev) =>
-      prev.map((item) => (item.product_id === productId ? { ...item, quantity } : item))
+      prev.map((item) =>
+        (item.product_id || item.id) === productId ? { ...item, quantity } : item
+      )
     );
   };
 
   const clearCart = () => setCart([]);
 
   const getSubtotal = () =>
-    cart.reduce((sum, item) => sum + Number(item.unit_price || 0) * Number(item.quantity || 1), 0);
+    cart.reduce(
+      (sum, item) =>
+        sum + Number(item.unit_price || item.price || 0) * Number(item.quantity || 1),
+      0
+    );
 
   const subtotal = getSubtotal();
   const totalPrice = subtotal;

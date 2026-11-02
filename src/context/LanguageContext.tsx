@@ -1,13 +1,18 @@
 ﻿"use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 
 export type Language = "bn" | "en";
 
-interface LanguageContextType {
+export interface LanguageContextType {
   lang: Language;
+  language: Language;
+  toggleLang: () => void;
+  toggleLanguage: () => void;
   setLang: (lang: Language) => void;
-  t: (bn: string, en: string) => string;
+  setLanguage: (lang: Language) => void;
+  t?: (key: string) => string;
+  [key: string]: any;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -17,28 +22,36 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     try {
-      const saved = localStorage.getItem("jj_lang") as Language;
+      const saved = localStorage.getItem("jibonjotno_lang") as Language;
       if (saved === "bn" || saved === "en") {
         setLangState(saved);
       }
-    } catch (e) {
-      console.error("Lang hydration error:", e);
-    }
+    } catch (e) {}
   }, []);
 
   const setLang = (newLang: Language) => {
     setLangState(newLang);
     try {
-      localStorage.setItem("jj_lang", newLang);
-    } catch (e) {
-      console.error("Lang save error:", e);
-    }
+      localStorage.setItem("jibonjotno_lang", newLang);
+    } catch (e) {}
   };
 
-  const t = (bn: string, en: string) => (lang === "bn" ? bn : en);
+  const toggleLang = () => {
+    setLang(lang === "bn" ? "en" : "bn");
+  };
 
   return (
-    <LanguageContext.Provider value={{ lang, setLang, t }}>
+    <LanguageContext.Provider
+      value={{
+        lang,
+        language: lang,
+        toggleLang,
+        toggleLanguage: toggleLang,
+        setLang,
+        setLanguage: setLang,
+        t: (k: string) => k,
+      }}
+    >
       {children}
     </LanguageContext.Provider>
   );
@@ -47,7 +60,15 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 export function useLanguage() {
   const context = useContext(LanguageContext);
   if (!context) {
-    throw new Error("useLanguage must be used within a LanguageProvider");
+    return {
+      lang: "bn" as Language,
+      language: "bn" as Language,
+      toggleLang: () => {},
+      toggleLanguage: () => {},
+      setLang: () => {},
+      setLanguage: () => {},
+      t: (k: string) => k,
+    };
   }
   return context;
 }

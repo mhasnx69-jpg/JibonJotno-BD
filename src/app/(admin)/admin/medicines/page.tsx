@@ -1,4 +1,5 @@
-﻿import { createClient } from "@/lib/supabase/server";
+﻿import AdminSidebar from '@/components/admin/AdminSidebar';
+import { createClient } from "@/lib/supabase/server";
 import { Pill, Plus, CheckCircle, AlertTriangle } from "lucide-react";
 import { createMedicineAndProduct } from "@/modules/medicines/medicines.actions";
 import { MediaUploader } from "@/components/admin/MediaUploader";

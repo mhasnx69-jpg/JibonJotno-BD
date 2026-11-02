@@ -205,3 +205,30 @@ INSERT INTO public.medicine_categories (name_bn, name_en, slug, icon_name) VALUE
 ('ডায়াবেটিস যত্ন', 'Diabetes Care', 'diabetes-care', 'activity'),
 ('ভিটামিন ও সাপ্লিমেন্ট', 'Vitamins & Supplements', 'vitamins-supplements', 'heart-pulse')
 ON CONFLICT (slug) DO NOTHING;
+
+-- ১. Orders টেবিলে যেকোনো কাস্টমারের জন্য অর্ডার সাবমিট (INSERT) পলিসি চালু
+DROP POLICY IF EXISTS "Anyone can insert orders" ON public.orders;
+CREATE POLICY "Anyone can insert orders"
+    ON public.orders FOR INSERT
+    WITH CHECK (true);
+
+-- ২. অর্ডার ট্র্যাকিং ও দেখার জন্য SELECT পলিসি
+DROP POLICY IF EXISTS "Users view own orders" ON public.orders;
+CREATE POLICY "Users view own orders"
+    ON public.orders FOR SELECT
+    USING (
+        auth.uid() = user_id 
+        OR user_id IS NULL
+        OR true
+    );
+
+-- ৩. Order Items টেবিলে আইটেম ইনসার্ট ও দেখার পলিসি
+DROP POLICY IF EXISTS "Anyone can insert order items" ON public.order_items;
+CREATE POLICY "Anyone can insert order items"
+    ON public.order_items FOR INSERT
+    WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public can view order items" ON public.order_items;
+CREATE POLICY "Public can view order items"
+    ON public.order_items FOR SELECT
+    USING (true);

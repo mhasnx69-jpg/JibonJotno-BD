@@ -59,10 +59,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       const idx = prev.findIndex((i) => (i.product_id || i.id) === pId);
       if (idx > -1) {
         const updated = [...prev];
-        updated[idx] = {
-          ...updated[idx],
-          quantity: updated[idx].quantity + (newItem.quantity || 1),
-        };
+        updated[idx] = { ...updated[idx], quantity: updated[idx].quantity + (newItem.quantity || 1) };
         return updated;
       }
       return [
@@ -88,9 +85,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       return;
     }
     setCart((prev) =>
-      prev.map((item) =>
-        (item.product_id || item.id) === productId ? { ...item, quantity } : item
-      )
+      prev.map((item) => ((item.product_id || item.id) === productId ? { ...item, quantity } : item))
     );
   };
 
@@ -98,8 +93,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const getSubtotal = () =>
     cart.reduce(
-      (sum, item) =>
-        sum + Number(item.unit_price || item.price || 0) * Number(item.quantity || 1),
+      (sum, item) => sum + Number(item.unit_price || item.price || 0) * Number(item.quantity || 1),
       0
     );
 

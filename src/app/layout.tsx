@@ -1,14 +1,9 @@
 ﻿import HealthChatWidget from '@/components/chat/HealthChatWidget';
 import type { Metadata } from "next";
-import HealthChatWidget from '@/components/chat/HealthChatWidget';
 import "./globals.css";
-import HealthChatWidget from '@/components/chat/HealthChatWidget';
 import "leaflet/dist/leaflet.css";
-import HealthChatWidget from '@/components/chat/HealthChatWidget';
 import { CartProvider } from "@/context/CartContext";
-import HealthChatWidget from '@/components/chat/HealthChatWidget';
 import { LanguageProvider } from "@/context/LanguageContext";
-import HealthChatWidget from '@/components/chat/HealthChatWidget';
 import CartDrawer from "@/components/cart/CartDrawer";
 
 export const metadata: Metadata = {
@@ -30,8 +25,8 @@ export default function RootLayout({
             <CartDrawer />
           </CartProvider>
         </LanguageProvider>
-      <HealthChatWidget />
-</body>
+              <HealthChatWidget />
+      </body>
     </html>
   );
 }

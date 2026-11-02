@@ -25,6 +25,9 @@ import {
   HeartPulse,
   ThermometerSnowflake,
   Layers,
+  ShieldAlert,
+  AlertTriangle,
+  FileCheck,
 } from "lucide-react";
 
 export default function MedicineDetailsPage() {
@@ -274,8 +277,7 @@ export default function MedicineDetailsPage() {
           </div>
 
           <div className="grid grid-cols-1 gap-4 text-xs sm:text-sm">
-            
-            {/* Indications (ব্যবহার বা রোগ) */}
+            {/* Indications */}
             <div className="space-y-2 bg-[#F7F9FC] p-4 sm:p-5 rounded-2xl border border-[#E5EBF2]">
               <h3 className="font-extrabold text-[#0D4C3B] flex items-center gap-2 text-sm sm:text-base">
                 <span>🎯</span>
@@ -286,7 +288,7 @@ export default function MedicineDetailsPage() {
               </p>
             </div>
 
-            {/* Active Ingredient (সক্রিয় উপাদান) */}
+            {/* Active Ingredient */}
             {med.active_ingredient && (
               <div className="space-y-1.5 bg-[#F7F9FC] p-4 sm:p-5 rounded-2xl border border-[#E5EBF2]">
                 <h3 className="font-extrabold text-[#0D4C3B] flex items-center gap-2 text-sm sm:text-base">
@@ -299,7 +301,7 @@ export default function MedicineDetailsPage() {
               </div>
             )}
 
-            {/* Side Effects (পার্শ্বপ্রতিক্রিয়া) */}
+            {/* Side Effects */}
             <div className="space-y-2 bg-rose-50/70 p-4 sm:p-5 rounded-2xl border border-rose-200">
               <h3 className="font-extrabold text-rose-900 flex items-center gap-2 text-sm sm:text-base">
                 <HeartPulse className="w-4 h-4 text-rose-600" />
@@ -310,7 +312,7 @@ export default function MedicineDetailsPage() {
               </p>
             </div>
 
-            {/* Storage Condition (সংরক্ষণ পদ্ধতি) */}
+            {/* Storage Condition */}
             <div className="space-y-2 bg-[#F7F9FC] p-4 sm:p-5 rounded-2xl border border-[#E5EBF2]">
               <h3 className="font-extrabold text-[#0D4C3B] flex items-center gap-2 text-sm sm:text-base">
                 <ThermometerSnowflake className="w-4 h-4" />
@@ -320,7 +322,6 @@ export default function MedicineDetailsPage() {
                 {isEn ? med.storage_condition : translateStorageToBn(med.storage_condition)}
               </p>
             </div>
-
           </div>
         </div>
 
@@ -401,6 +402,46 @@ export default function MedicineDetailsPage() {
             </div>
           </div>
         )}
+
+        {/* ৪. বাংলাদেশ আইন ও বিএমডিসি বিধি মোতাবেক আইনি সতর্কবার্তা ও দায়মুক্তি (Legal Disclaimer) */}
+        <div className="bg-amber-50/70 rounded-3xl border border-amber-200 p-6 sm:p-7 space-y-3.5 shadow-2xs text-xs">
+          <div className="flex items-center gap-2 text-amber-950 font-black text-sm border-b border-amber-200/80 pb-2.5">
+            <ShieldAlert className="w-5 h-5 text-amber-700 shrink-0" />
+            <span>
+              {isEn
+                ? "Statutory Legal Disclaimer & Medical Liability Notice (Bangladesh Health Regulations)"
+                : "আইনি সতর্কবার্তা ও চিকিৎসা দায়মুক্তি বিজ্ঞপ্তি (বাংলাদেশ স্বাস্থ্য ও ওষুধ আইন অনুযায়ী)"}
+            </span>
+          </div>
+
+          <div className="text-amber-900 leading-relaxed space-y-2 text-[11px] sm:text-xs">
+            {isEn ? (
+              <>
+                <p>
+                  <strong>Notice under The Drugs Act, 1940 / Drugs Act, 2023 & BMDC Act:</strong> The pharmaceutical, dosage, indication, and clinical data displayed on JibonJotno are compiled solely for informational, public awareness, and educational purposes. This platform does not provide direct medical advice, clinical diagnosis, or personalized treatment plans.
+                </p>
+                <p>
+                  Any medication designated as <strong>Prescription Required (Rx)</strong> must only be consumed under the explicit written prescription and supervision of a registered medical practitioner (BMDC registered physician). Self-medication or altering prescribed dosages without consulting a certified doctor is strictly prohibited and medically hazardous.
+                </p>
+                <p className="text-[10px] text-amber-800 italic pt-1">
+                  JibonJotno BD operates as an e-health information and pharmacy facilitation network. In case of any medical emergencies, adverse drug reactions, or acute symptoms, users are advised to immediately visit the nearest registered hospital or call the national emergency health helpline 16263 / 999.
+                </p>
+              </>
+            ) : (
+              <>
+                <p>
+                  <strong>বাংলাদেশ ওষুধ আইন (The Drugs Act / ড্রাগস আইন ২০২৩) এবং বিএমডিসি বিধিমালা অনুযায়ী সতর্কীকরণ:</strong> জীবনযত্ন প্ল্যাটফর্মে প্রদর্শিত সকল ওষুধের বিবরণ, ব্যবহারবিধি, পার্শ্বপ্রতিক্রিয়া এবং অন্যান্য চিকিৎসা সংক্রান্ত তথ্য শুধুমাত্র জনসচেতনতা, তথ্যসংগ্রহ ও শিক্ষামূলক উদ্দেশ্যে সংকলিত হয়েছে। এটি কোনোভাবেই একজন রেজিস্টার্ড চিকিৎসকের প্রেসক্রিপশন বা পেশাদার চিকিৎসার বিকল্প নয়।
+                </p>
+                <p>
+                  যেকোনো <strong>প্রেসক্রিপশন আবশ্যক (Rx)</strong> ওষুধ সেবনের পূর্বে অবশ্যই বাংলাদেশ মেডিকেল অ্যান্ড ডেন্টাল কাউন্সিল (BMDC) স্বীকৃত রেজিস্টার্ড চিকিৎসকের লিখিত পরামর্শ গ্রহণ করুন। চিকিৎসকের প্রেসক্রিপশন ব্যতীত নিজে নিজে ওষুধ সেবন (Self-medication) আইনত ও স্বাস্থ্যগতভাবে অত্যন্ত ঝুঁকিপূর্ণ।
+                </p>
+                <p className="text-[10px] text-amber-800 italic pt-1">
+                  জীবনযত্ন কোনো সরাসরি চিকিৎসা প্রদানকারী প্রতিষ্ঠান নয়, বরং একটি ডিজিটাল স্বাস্থ্য তথ্য ও সেবা সংযোগকারী মাধ্যম। ওষুধের বিরূপ প্রতিক্রিয়া বা যেকোনো জরুরি স্বাস্থ্য পরিস্থিতিতে বিলম্ব না করে নিকটস্থ হাসপাতালে যোগাযোগ করুন অথবা সরকারি স্বাস্থ্য বাতায়ন ১৬২৬৩ / জাতীয় জরুরি সেবা ৯৯৯-এ কল করুন।
+                </p>
+              </>
+            )}
+          </div>
+        </div>
 
       </main>
     </div>

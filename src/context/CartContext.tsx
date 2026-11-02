@@ -14,8 +14,6 @@ export interface CartItem {
   strip_price?: number;
   pack_unit?: string;
   quantity: number;
-  image?: string;
-  image_url?: string;
   [key: string]: any;
 }
 
@@ -36,7 +34,6 @@ export interface CartContextType {
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
-const STORAGE_KEY = "jibonjotno_cart_v2";
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -44,17 +41,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) setCart(parsed);
-      }
+      const saved = localStorage.getItem("jibonjotno_cart_v2");
+      if (saved) setCart(JSON.parse(saved));
     } catch (e) {}
   }, []);
 
   useEffect(() => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
+      localStorage.setItem("jibonjotno_cart_v2", JSON.stringify(cart));
     } catch (e) {}
   }, [cart]);
 
@@ -78,7 +72,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           product_id: pId,
           id: pId,
           unit_price: Number(newItem.unit_price || newItem.price || 0),
-          price: Number(newItem.unit_price || newItem.price || 0),
           quantity: newItem.quantity || 1,
         },
       ];
@@ -111,8 +104,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     );
 
   const subtotal = getSubtotal();
-  const totalPrice = subtotal;
-  const totalItems = cart.reduce((sum, item) => sum + Number(item.quantity || 0), 0);
 
   return (
     <CartContext.Provider
@@ -127,8 +118,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         clearCart,
         getSubtotal,
         subtotal,
-        totalPrice,
-        totalItems,
+        totalPrice: subtotal,
+        totalItems: cart.reduce((sum, item) => sum + Number(item.quantity || 0), 0),
       }}
     >
       {children}

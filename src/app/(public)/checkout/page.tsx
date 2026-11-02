@@ -5,13 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { createClient } from "@/lib/supabase/client";
-import {
-  ArrowLeft,
-  CheckCircle2,
-  User,
-  Phone,
-  MapPin,
-} from "lucide-react";
+import { ArrowLeft, CheckCircle2, User, Phone, MapPin } from "lucide-react";
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -29,7 +23,6 @@ export default function CheckoutPage() {
   const [customerPhone, setCustomerPhone] = useState("");
   const [shippingAddress, setShippingAddress] = useState("");
   const [deliveryZone, setDeliveryZone] = useState<"dhaka" | "outside">("dhaka");
-  const [note, setNote] = useState("");
   const [loading, setLoading] = useState(false);
   const [orderSuccessId, setOrderSuccessId] = useState<string | null>(null);
 
@@ -56,11 +49,8 @@ export default function CheckoutPage() {
         total_amount: grandTotal,
         payment_method: "COD",
         status: "pending",
-        order_notes: note.trim() || null,
       });
-    } catch (err) {
-      console.warn("Order logged:", err);
-    }
+    } catch (err) {}
 
     setOrderSuccessId(generatedOrderNumber);
     clearCart();
@@ -74,19 +64,14 @@ export default function CheckoutPage() {
           <div className="w-16 h-16 rounded-full bg-emerald-100 text-[#0D4C3B] flex items-center justify-center mx-auto">
             <CheckCircle2 className="w-10 h-10" />
           </div>
-          <div>
-            <h1 className="text-xl font-black text-[#101B32]">অর্ডার সফলভাবে সম্পন্ন হয়েছে!</h1>
-            <p className="text-xs text-[#7B8AA4] pt-1">
-              আমাদের রেজিস্টার্ড ফার্মাসিস্ট খুব শীঘ্রই আপনার সাথে যোগাযোগ করবেন।
-            </p>
-          </div>
+          <h1 className="text-xl font-black text-[#101B32]">অর্ডার সফলভাবে সম্পন্ন হয়েছে!</h1>
           <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200">
-            <span className="text-xs text-emerald-800 block">আপনার অর্ডার ট্র্যাকিং নম্বর:</span>
+            <span className="text-xs text-emerald-800 block">ট্র্যাকিং নম্বর:</span>
             <span className="text-xl font-black text-[#0D4C3B] font-mono">{orderSuccessId}</span>
           </div>
           <button
             onClick={() => router.push("/order-tracking")}
-            className="w-full py-3.5 rounded-xl bg-[#0D4C3B] hover:bg-[#12614A] text-white font-bold text-xs"
+            className="w-full py-3.5 rounded-xl bg-[#0D4C3B] text-white font-bold text-xs"
           >
             অর্ডার ট্র্যাক করুন
           </button>
@@ -98,96 +83,81 @@ export default function CheckoutPage() {
   return (
     <div className="min-h-screen bg-[#F7F9FC] font-sans text-[#101B32] py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto space-y-6">
-        <Link
-          href="/medicines"
-          className="inline-flex items-center gap-2 text-xs font-bold text-[#0D4C3B] hover:text-[#12614A]"
-        >
+        <Link href="/medicines" className="inline-flex items-center gap-2 text-xs font-bold text-[#0D4C3B]">
           <ArrowLeft className="w-4 h-4" />
           <span>ওষুধ তালিকায় ফিরে যান</span>
         </Link>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2 bg-white rounded-3xl p-6 sm:p-8 border border-[#E5EBF2] shadow-xs space-y-5">
-            <h2 className="text-lg font-black text-[#101B32]">ডেলিভারি ঠিকানা ও তথ্য</h2>
+            <h2 className="text-lg font-black text-[#101B32]">ডেলিভারি তথ্য</h2>
             <form onSubmit={handleSubmitOrder} className="space-y-4 text-xs">
               <div>
                 <label className="font-bold block mb-1">রোগী / গ্রহণকারীর নাম *</label>
-                <div className="relative">
-                  <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
-                  <input
-                    type="text"
-                    required
-                    value={customerName}
-                    onChange={(e) => setCustomerName(e.target.value)}
-                    placeholder="আপনার পূর্ণ নাম"
-                    className="w-full pl-10 pr-3 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white"
-                  />
-                </div>
+                <input
+                  type="text"
+                  required
+                  value={customerName}
+                  onChange={(e) => setCustomerName(e.target.value)}
+                  placeholder="আপনার পূর্ণ নাম"
+                  className="w-full p-3 rounded-xl border border-slate-200 bg-slate-50"
+                />
               </div>
 
               <div>
                 <label className="font-bold block mb-1">১১ ডিজিটের মোবাইল নম্বর *</label>
-                <div className="relative">
-                  <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
-                  <input
-                    type="tel"
-                    required
-                    pattern="01[3-9][0-9]{8}"
-                    value={customerPhone}
-                    onChange={(e) => setCustomerPhone(e.target.value)}
-                    placeholder="017XXXXXXXX"
-                    className="w-full pl-10 pr-3 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white"
-                  />
-                </div>
+                <input
+                  type="tel"
+                  required
+                  pattern="01[3-9][0-9]{8}"
+                  value={customerPhone}
+                  onChange={(e) => setCustomerPhone(e.target.value)}
+                  placeholder="017XXXXXXXX"
+                  className="w-full p-3 rounded-xl border border-slate-200 bg-slate-50"
+                />
               </div>
 
-              <div>
-                <label className="font-bold block mb-1">ডেলিভারি এলাকা *</label>
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setDeliveryZone("dhaka")}
-                    className={`py-3 px-4 rounded-xl text-xs font-bold border transition-all ${
-                      deliveryZone === "dhaka"
-                        ? "bg-emerald-50 border-[#0D4C3B] text-[#0D4C3B]"
-                        : "border-slate-200 text-slate-600"
-                    }`}
-                  >
-                    ঢাকার ভেতরে (৳৬০)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setDeliveryZone("outside")}
-                    className={`py-3 px-4 rounded-xl text-xs font-bold border transition-all ${
-                      deliveryZone === "outside"
-                        ? "bg-emerald-50 border-[#0D4C3B] text-[#0D4C3B]"
-                        : "border-slate-200 text-slate-600"
-                    }`}
-                  >
-                    ঢাকার বাইরে (৳১২০)
-                  </button>
-                </div>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setDeliveryZone("dhaka")}
+                  className={`py-3 px-4 rounded-xl text-xs font-bold border ${
+                    deliveryZone === "dhaka"
+                      ? "bg-emerald-50 border-[#0D4C3B] text-[#0D4C3B]"
+                      : "border-slate-200 text-slate-600"
+                  }`}
+                >
+                  ঢাকার ভেতরে (৳৬০)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setDeliveryZone("outside")}
+                  className={`py-3 px-4 rounded-xl text-xs font-bold border ${
+                    deliveryZone === "outside"
+                      ? "bg-emerald-50 border-[#0D4C3B] text-[#0D4C3B]"
+                      : "border-slate-200 text-slate-600"
+                  }`}
+                >
+                  ঢাকার বাইরে (৳১২০)
+                </button>
               </div>
 
               <div>
                 <label className="font-bold block mb-1">পূর্ণ ঠিকানা *</label>
-                <div className="relative">
-                  <MapPin className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
-                  <textarea
-                    required
-                    rows={3}
-                    value={shippingAddress}
-                    onChange={(e) => setShippingAddress(e.target.value)}
-                    placeholder="বাসা নম্বর, রোড, এলাকা, থানা..."
-                    className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white"
-                  />
-                </div>
+                <textarea
+                  required
+                  rows={3}
+                  value={shippingAddress}
+                  onChange={(e) => setShippingAddress(e.target.value)}
+                  placeholder="বাসা নম্বর, রোড, এলাকা, থানা..."
+                  className="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50"
+                />
               </div>
 
               <button
                 type="submit"
                 disabled={loading || cart.length === 0}
-                className="w-full py-4 rounded-2xl bg-[#0D4C3B] hover:bg-[#12614A] text-white font-extrabold text-sm shadow-md transition-all flex items-center justify-center gap-2 disabled:bg-slate-300"
+                className="w-full py-4 rounded-2xl bg-[#0D4C3B] text-white font-extrabold text-sm shadow-md"
               >
                 {loading ? "অর্ডার প্রসেস হচ্ছে..." : "ক্যাশ অন ডেলিভারিতে অর্ডার নিশ্চিত করুন"}
               </button>
@@ -206,7 +176,7 @@ export default function CheckoutPage() {
                 <span className="font-bold text-emerald-700">৳ {deliveryFee.toFixed(2)}</span>
               </div>
               <div className="border-t border-dashed pt-2 flex justify-between font-black text-sm text-[#101B32]">
-                <span>মোট পরিশোধযোগ্য:</span>
+                <span>মোট:</span>
                 <span className="text-[#0D4C3B]">৳ {grandTotal.toFixed(2)}</span>
               </div>
             </div>
